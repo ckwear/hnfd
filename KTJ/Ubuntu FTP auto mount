@@ -1,0 +1,15 @@
+sudo apt-get install curlftpfs
+sudo mkdir -p /mnt/ftp
+sudo chmod 600 /mnt/ftp
+
+sudo vim /root/.netrc
+
+machine ipadd
+login id
+password pw
+
+sudo chmod 600 /root/.netrc
+
+sudo vim /etc/fstab
+
+curlftpfs#${FTP_USERNAME}:@${FTP_SERVER} /mnt fuse _netdev,x-systemd.automount,allow_other,gid=1000,uid=1000,umash=0022 0 0
