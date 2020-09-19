@@ -1,0 +1,299 @@
+{% extends 'user/base.html' %}
+{% block script%}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.0/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.0/locale/ko.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+<script src="/assets/js/bootstrap-datetimepicker.js">
+</script>
+<link rel="stylesheet" type="text/css" href="/assets/css/datetimepickerstyle.css" />
+ <script >
+
+ $(document).ready(function(){
+    $('.dateTimePicker').datetimepicker({format:"YYYY-MM-DD"});
+        $('#datepicker1').datetimepicker({
+            useCurrent: false
+        });
+
+        $("#datepicker1").on("dp.change", function (e) {
+            $('#datepicker4').data("DateTimePicker").minDate(e.date);
+        });
+        $("#datepicker1").on("dp.change", function (e) {
+            $('#datepicker3').data("DateTimePicker").minDate(e.date);
+        });
+        $("#datepicker1").on("dp.change", function (e) {
+            $('#datepicker2').data("DateTimePicker").minDate(e.date);
+    });
+
+ });
+
+
+$(document).on("click", "#one_result", function(){
+    var send_date = $('#dateform').val();
+    var send_factoy_num = $('#factoryform').val();
+    var send_sub = $('#subform').val();
+    var url = `/assets/one_result.html?send_date=${send_date}&send_factoy_num=${send_factoy_num}&send_sub=${send_sub}`;
+
+    if(send_date == '') {
+        alert('날자를 입력하세요.');
+    }else {
+        window.open(url, "childForm", "width=920, height=900, resizable = no, scrollbars = no");
+    }
+});
+
+$(document).on("click", "#two_result", function(){
+    var send_date = $('#dateform').val();
+    var send_factoy_num = $('#factoryform').val();
+    var send_sub = $('#subform').val();
+    var url = `/assets/two_result.html?send_date=${send_date}&send_factoy_num=${send_factoy_num}&send_sub=${send_sub}`;
+    //alert('wef')
+    if(send_date == '') {
+        alert('날자를 입력하세요.');
+    }else {
+        window.open(url, "childForm", "width=920, height=900, resizable = no, scrollbars = no");
+    }
+});
+
+$(document).on("click", "#get_orders", function(){
+    var send_date = $('#dateform').val();
+    var send_factoy_num = $('#factoryform').val();
+    var send_sub = $('#subform').val();
+    $('#maketbody').empty();
+    if(send_date == '') {
+        alert('날자를 입력하세요.');
+    }else {
+        $.ajax({
+
+            type: "post",
+            url: "/catchorderpaper/",
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'send_date': send_date,
+                'send_factoy_num': send_factoy_num,
+                'send_sub': send_sub
+            },
+            dataType: "JSON",
+            success: function (result) {
+                var cnt = result.cnt;
+                var get_no;
+                var get_item_code;
+                var get_item_name;
+                var html = "";
+                var get_ett2;
+                for (i = 0; i < cnt; i++) {
+                    get_no = result.query[i].No;
+                    get_item_code = result.query[i].item_code;
+                    get_item_name = result.query[i].item_name;
+                    get_due_date = result.query[i].due_date;
+                    
+                    get_due_date = get_due_date.substring(0, 10);
+                    get_con = result.query[i].con;
+                    if(get_con==null) {
+                        get_con = "";
+                    }
+                    get_soter = result.query[i].soter;
+                    get_item_kind = result.query[i].item_kind;
+                    get_input = result.query[i].input;
+                    get_zone = result.query[i].zone;
+                    
+                    get_bus_num = result.query[i].bus_num;
+                    get_order_part = result.query[i].order_part;
+                    get_cmpy_code = result.query[i].cmpy_code;
+                    get_cmpy_name = result.query[i].cmpy_name;
+                    get_order_value = result.query[i].order_value;
+                    get_unit = result.query[i].unit;
+                    get_unit_price = result.query[i].unit_price;
+                    get_order_price = result.query[i].order_price;
+                    get_delivery_part = result.query[i].delivery_part;
+                    
+                    get_ett = result.query[i].ett;
+                    if(get_ett == null) {
+                        get_ett = "";
+                    }
+                    get_ordered_num = result.query[i].ordered_num;
+                    if(get_ett == null) {
+                        get_ett = "";
+                    }
+                    get_ordered_ITEM_num = result.query[i].ordered_ITEM_num;
+                    get_order_num = result.query[i].order_num;
+   
+                    get_order_ITEM_num = result.query[i].order_ITEM_num;
+                    get_delivery_cmpy = result.query[i].delivery_cmpy;
+                    get_delivery_num = result.query[i].delivery_num;
+                    if(get_delivery_num==null) {
+                        get_delivery_num = "";
+                    }
+                    get_factory_num = result.query[i].factory_num;
+                    if(get_factory_num==null) {
+                        get_factory_num = "";
+                    }
+
+                    html += "<tr>";
+                    html += `<td>${get_no}</td>`;
+                    html += `<td>${get_item_code}</td>`;
+                    html += `<td>${get_item_name}</td>`;
+                    html += `<td>${get_due_date}</td>`;
+                    html += `<td>${get_con}</td>`;
+                    html += `<td>${get_item_kind}</td>`;
+                    html += `<td>${get_soter}</td>`;
+                    html += `<td>${get_input}</td>`;
+                    
+                    
+                    html += `<td>${get_zone}</td>`;
+                    html += `<td>${get_bus_num}</td>`;
+                    html += `<td>${get_order_part}</td>`;
+                    html += `<td>${get_cmpy_code}</td>`;
+                    html += `<td>${get_cmpy_name}</td>`;
+                    html += `<td>${get_order_value}</td>`;
+                    html += `<td>${get_unit}</td>`;
+                    html += `<td>${get_unit_price}</td>`;
+                    html += `<td>${get_order_price}</td>`;
+                    html += `<td>${get_delivery_part}</td>`;
+                    html += `<td>${get_ett}</td>`;
+                    
+                    
+                    html += `<td>${get_ordered_num}</td>`;
+                    html += `<td>${get_ordered_ITEM_num}</td>`;
+                    html += `<td>${get_order_num}</td>`;
+                    html += `<td>${get_order_ITEM_num}</td>`;
+                    html += `<td>${get_delivery_cmpy}</td>`;
+                    html += `<td>${get_delivery_num}</td>`;
+                    html += `<td>${get_factory_num}</td>`;
+
+
+                    html += "</tr>";
+                }
+                $('#maketbody').append(html);
+
+            },
+            error: function (request, status, error) {
+                alert("code:" + request.status + "\n" + "error:" + error);
+            }
+        });
+    }
+});
+
+$(document).on("click", "#btn_login", function(){
+    window.open('/assets/open_ajax.html',"childForm", "width=1470, height=900, resizable = no, scrollbars = no");
+});
+</script>
+
+{% endblock %}
+{% block content %}
+
+<div class="row">
+
+
+    <label for="exampleFormControlSelect1" style="margin-top:8px;margin-left:20px;">날짜 선택 </label>
+
+
+    <div class='col-sm-2'>
+        <div class="form-group">
+            <div class='input-group date dateTimePicker' id="datepicker1">
+                <input type='text' class="form-control" id="dateform" name="openDate" required="required"/>
+                <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        </div>
+    </div>
+
+
+    <label for="exampleFormControlSelect1" style="margin-top:8px;margin-left:146px;">공장</label>
+
+
+    <div class="col-sm-1">
+        <div class="form-group">
+            <select class="form-control" id="factoryform" name="fcty_nu" value="용인1">
+                <option>평택1</option>
+                <option>평택2</option>
+                <option>평택3</option>
+                <option>평택4</option>
+                <option>용인1</option>
+                <option>용인2</option>
+            </select>
+        </div>
+
+    </div>
+    <label for="exampleFormControlSelect1" style="margin-top:8px;margin-left:146px;">소분</label>
+
+    <div class="col-sm-1">
+        <div class="form-group">
+
+            <select class="form-control" id="subform" name="subdivision">
+                <option>1차</option>
+                <option>2차</option>
+            </select>
+
+        </div>
+
+    </div>
+    
+
+</div>
+
+<div class="row">
+    <div class="col-sm-1">
+        <button type="submit" class="save btn btn-default" id="one_result" onclick="one_result()">1차 결과지(평일)</button>
+    </div>
+    <div class="col-sm-4">
+        <button type="submit" class="save btn btn-default" id="two_result" onclick="valuesend()">2차 결과지</button>
+    </div>
+    <div class="col-sm-1">
+        <button type="submit" id="get_orders" class="save btn btn-default">발주장 조회</button>
+    </div>
+    <div class="col-sm-1">
+        <button type="submit" class="save btn btn-default" id="btn_login" onclick="valuesend()">품목 조회</button>
+    </div>
+</div>
+
+<div class="row" style="margin-top:10px;">
+    <div class="col-sm-5">
+        <button type="submit" class="save btn btn-default" id="btn_login" onclick="valuesend()">1차 결과지(주말)</button>
+    </div>
+
+</div>
+<div class="row" style="margin-top:10px;">
+    <div style="width:1600px; height:800px; overflow-x:scroll;white-space:nowrap;border-collapse:collapse">
+
+        <table class="table" style="white-space:nowrap;border-collapse:collapse">
+            <thead>
+                <tr>
+                    <th width="10">No</th>
+                    <th width="100">품목코드</th>
+                    <th width="600">품목명</th>
+                    <th width="60">납기일자</th>
+                    <th width="80">상황여부</th>
+                    <th width="80">상품종류</th>
+                    <th width="60">소터</th>
+                    <th width="60">입고장</th>
+                    <th width="60">존</th>
+                    <th width="60">버스번호</th>
+                    <th width="60">발주구분</th>
+                    <th width="60">사업장코드</th>
+                    <th width="60">사업장명</th>
+                    <th width="60">주문량</th>
+                    <th width="60">발주수량</th>
+                    <th width="60">단위</th>
+                    <th width="60">단가</th>
+                    <th width="60">발주금액</th>
+                    <th width="60">배송구분</th>
+                    <th width="60">특기사항</th>
+                    <th width="60">발주번호</th>
+                    <th width="60">발주ITEM번호</th>
+                    <th width="60">주문번호</th>
+                    <th width="60">주문ITEM번호</th>
+                    <th width="60">택배업체</th>
+                    <th>택배송장번호</th>
+                </tr>
+            </thead>
+            <tbody id="maketbody">
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+{% endblock %}

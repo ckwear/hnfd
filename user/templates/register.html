@@ -1,0 +1,32 @@
+{% extends 'user/base.html' %}
+{% block content %}
+
+
+    <div class="row gtr-uniform" style="position : absolute;top:20%;left:35%;border: 0px solid gray;">
+        <h1>회 원 가 입</h1>
+        <div class="col-8">
+            <form method="POST" class="post-form" action="{% url 'register' %}">{% csrf_token %}
+                <label for="demo-priority-low">nickname</label>
+                {{ registerform.name }}
+                <br>
+                <label for="demo-priority-low">email</label>
+                {{ registerform.email }}
+                <br>
+                <label for="demo-priority-low">id</label>
+                {{ registerform.id }}
+                <br>
+                <label for="demo-priority-low">password</label>
+                {{ registerform.pw }}
+                <br>
+                <label for="demo-priority-low">password confirm</label>
+                {{ registerform.pw2 }}
+                <br>
+                <button type="submit" class="save btn btn-default">Save</button>
+            </form>
+        </div>
+
+    </div>
+
+
+
+{% endblock %}

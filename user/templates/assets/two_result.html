@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <title>
+            단락 나누기
+        </title>
+
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script type="text/javascript">
+
+$(document).ready(function () {
+    var search = window.location.search;
+    var obj = {};
+    var uri = decodeURI(search);
+    uri = uri.slice(1, uri.length);
+    var param = uri.split('&');
+    for (
+        var i = 0; i < param.length; i++) {
+        var devide = param[i].split('=');
+
+        obj[devide[0]] = devide[1];
+    }
+    var strArr = obj['send_date'].split('-');
+    var maked_title = strArr[0].substring(2,4) + '.'+ strArr[1] +'.'+ strArr[2] + obj['send_factoy_num'] + '-' + obj['send_sub'];
+    $('h2').text(maked_title);
+    $.ajax({
+        type: "get",
+        url: "/resulttwo/",
+        data: obj,
+        dataType: "JSON",
+        success : function(result) {
+            //alert(result.cnt)
+            
+        },
+        error : function(request, status, error) {
+            alert("code:" + request.status + "\n" + "error:" + error);
+        }
+    });
+});
+
+
+
+
+
+        </script>
+        <style>
+
+
+
+
+@page {
+
+size: A4;
+
+margin: 6.5mm;
+
+}
+table {
+    border: 1px solid #444444;
+    border-collapse: collapse;
+  }
+  th, td {
+    border: 1px solid #444444;
+      font-size: 11px;
+  }
+
+
+
+
+
+
+    </style>
+    </head>
+    <body>
+        <h2 style="margin:0 0px 10px 30px;"></h2>
+        <div class="page">
+
+            <div class="subpage">
+
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th width="4">No</th>
+                            <th width="1">입</th>
+                            <th width="110">회사명</th>
+                            <th width="30">송구</th>
+                            <th width="35">단위</th>
+                            <th width="450">품목명</th>
+                            <th width="3">존</th>
+                            <th width="45">수량</th>
+                            <th width="30">소분</th>
+                            <th width="30">소분</th>
+                            <th width="30">소분</th>
+                            <th width="45">확인</th>
+
+                        </tr>
+                    </thead>
+                    <tbody id="maketbody">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

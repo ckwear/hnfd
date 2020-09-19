@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <title>
+            단락 나누기
+        </title>
+
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script type="text/javascript">
+
+$(document).ready(function () {
+    var search = window.location.search;
+    var obj = {};
+    var uri = decodeURI(search);
+    uri = uri.slice(1, uri.length);
+    var param = uri.split('&');
+    for (
+        var i = 0; i < param.length; i++) {
+        var devide = param[i].split('=');
+
+        obj[devide[0]] = devide[1];
+    }
+    var strArr = obj['send_date'].split('-');
+    var maked_title = strArr[0].substring(2,4) + '.'+ strArr[1] +'.'+ strArr[2] + obj['send_factoy_num'] + '-' + obj['send_sub'];
+    $('h2').text(maked_title);
+    $.ajax({
+        type: "get",
+        url: "211.217.50.93:8000/resultone/",
+        data: obj,
+        dataType: "JSON",
+        success : function(result) {
+            var cnt = result.cnt;
+            var get_item_code;
+            var get_item_name;
+            //alert(cnt)
+
+            // var row = my_tbody.insertRow(0); // 상단에 추가
+            // var row = my_tbody.insertRow( my_tbody.rows.length ); // 하단에 추가
+
+            var html = "";
+            var nu = 1;
+            var temp_box_div;
+            var temp_box_mod;
+            //'cmpy_name', 'delivery_part', 'unit', 'item_name', 'zone', 'order_value', 'box_num', 'box', 'pac', 'due_date', 'factory_num', 'sub'
+            for(i=0;i<cnt-1;i++) {
+                var get_order_num = result.query[i].order_num;
+                var get_input = result.query[i].input;
+                var get_cmpy_name = result.query[i].cmpy_name;
+                var get_delivery_part = result.query[i].delivery_part;
+                var get_unit = result.query[i].unit;
+                var get_item_name = result.query[i].item_name;
+                var get_zone = result.query[i].zone;
+                var get_order_value = result.query[i].order_value;
+                var get_box_num = result.query[i].box_num;
+                var get_box = result.query[i].box;
+                var get_pac = result.query[i].pac;
+                get_cmpy_name = get_cmpy_name.slice(0, 7);
+
+                if(Number.isInteger(get_order_num) == true) {
+                    html += "<tr id='setcr'>";
+                    html += `<td>${nu}</td>`;
+                    html += `<td>${get_input}</td>`;
+                    html += `<td>${get_cmpy_name}</td>`;
+                    html += `<td>${get_delivery_part}</td>`;
+                    html += `<td>${get_unit}</td>`;
+                    html += `<td>${get_item_name}</td>`;
+                    html += `<td>${get_zone}</td>`;
+                    html += `<td><b>${get_order_value}</b></td>`;
+                    html += `<td>${get_box}</td>`;
+                    html += `<td></td>`;
+                    html += `<td>${get_pac}</td>`;
+                    html += `<td></td>`;
+                    html += '</tr>';
+                    nu++;
+                }else {
+                    temp_box_div = parseInt(get_pac / get_box_num);
+                    temp_box_mod = get_pac % get_box_num;
+                    html += "<tr id='setcr' style='background-color:#f4f4f4;'>";
+                    html += `<td></td>`;
+                    html += `<td></td>`;
+                    html += `<td></td>`;
+                    html += `<td></td>`;
+                    html += `<td></td>`;
+                    html += `<td></td>`;
+                    html += `<td></td>`;
+                    html += `<td></td>`;
+                    html += `<td><b>${get_box}</b></td>`;
+                    html += `<td><b>${temp_box_div}</b></td>`;
+                    html += `<td><b>${temp_box_mod}</b></td>`;
+                    html += `<td></td>`;
+                    html += '</tr>';
+
+                }
+
+            }
+            
+            $('#maketbody').append(html);
+
+        },
+        error : function(request, status, error) {
+            alert("code:" + request.status + "\n" + "error:" + error);
+        }
+    });
+    $('#addtitle').append(title_str);
+});
+
+
+
+
+
+        </script>
+        <style>
+
+
+
+
+@page {
+
+size: A4;
+
+margin: 6.5mm;
+
+}
+table {
+    border: 1px solid #444444;
+    border-collapse: collapse;
+  }
+  th, td {
+    border: 1px solid #444444;
+      font-size: 11px;
+  }
+
+
+
+
+
+
+    </style>
+    </head>
+    <body id="addtitle">
+        <h2 style="margin:0 0px 10px 30px;"></h2>
+        <div class="page">
+
+            <div class="subpage">
+
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th width="4">No</th>
+                            <th width="1">입</th>
+                            <th width="110">회사명</th>
+                            <th width="30">송구</th>
+                            <th width="35">단위</th>
+                            <th width="450">품목명</th>
+                            <th width="3">존</th>
+                            <th width="45">수량</th>
+                            <th width="30">소분</th>
+                            <th width="30">소분</th>
+                            <th width="30">소분</th>
+                            <th width="45">확인</th>
+
+                        </tr>
+                    </thead>
+                    <tbody id="maketbody">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <title>
+            단락 나누기
+        </title>
+
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script>
+
+$(document).ready(function() {
+    $.ajax({
+        type : "get",
+        url :"/catchitems/",
+        data : {'csrfmiddlewaretoken': '{{ csrf_token }}'},
+        dataType : "JSON",
+        success : function(result) {
+            var cnt = result.cnt;
+            var get_item_code;
+            var get_item_name;
+            //alert(cnt)
+
+            // var row = my_tbody.insertRow(0); // 상단에 추가
+            // var row = my_tbody.insertRow( my_tbody.rows.length ); // 하단에 추가
+
+            var html = "";
+            for(i=0;i<cnt;i++) {
+                get_item_code = result.query[i].row[0].item_code;
+                get_item_name = result.query[i].row[1].item_name;
+                
+                html += "<ul id='setcr'>";
+                html += `<li style="width:110px; ">${get_item_code}</li>`;
+                html += `<li style="width:550px; ">${get_item_name}</li>`;
+                //html += "<form method='POST' action=\"{% url 'additem' %}\">";
+                html += "<form method='get' action='../additem/'>";
+                html += `<li><input type='text' style='width : 345px;' id='nickname${i}'></li>`;
+                html += `<li><select value='PAC' id='unit${i}'><option>PAC</option><option>BOX</option><option>EA<option>KG</option></select></li>`;
+                html += `<li><INPUT TYPE='NUMBER' MIN='0' MAX='100' STEP='1' VALUE='10' SIZE='4' height='40' id='bnum${i}'></li>`;
+                html += `<li><INPUT TYPE='NUMBER' MIN='0' MAX='100' STEP='1' VALUE='10' SIZE='4' height='40' id='enum${i}'></li>`;
+                html += `<li><INPUT TYPE='NUMBER' MIN='0' MAX='100' STEP='1' VALUE='10' SIZE='4' height='40' id='knum${i}'></li>`;
+                html += `<li><input type='button' value='입력' id='input${i}'></li>`;
+                html += '</form>';
+                html += '</ul>';
+            }
+            $('#additem').append(html);
+            var a= $("[id^='input']").click(function () {
+                var get_id = this.id;
+                get_id = get_id.slice(-1);
+
+                var get_nickname = $(`#nickname${get_id}`).val()
+
+                var get_unit = $(`#unit${get_id}`).val()
+                var get_bnum = $(`#bnum${get_id}`).val()
+                var get_enum = $(`#enum${get_id}`).val()
+                var get_knum = $(`#knum${get_id}`).val()
+                alert(result.query[get_id].row[1].item_name)
+                $.ajax({
+                    type : "get",
+                    url :"/additem/",
+                    data : {
+                        'code' : result.query[get_id].row[0].item_code,
+                        'name' : result.query[get_id].row[1].item_name,
+                        'nickname' : get_nickname,
+                        'unit' : get_unit,
+                        'bnum' : get_bnum,
+                        'enum' : get_enum,
+                        'knum' : get_knum
+                    }, 
+                    success:function(data){ 
+                        
+                    }
+                });
+            });
+        },
+        error : function(request, status, error) {
+            alert("code:" + request.status + "\n" + "error:" + error);
+        }
+    });
+
+});
+
+        </script>
+        <style>
+ul {
+    display:flex;
+    margin:0;
+    padding:0;
+    flex-direction:row;
+    list-style-type : none;
+
+}
+
+li {
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+    border : 0;
+    float: left;
+    margin-left : 10px;
+    margin-bottom : 17px;
+
+}
+div {
+    margin-top : 100px;
+
+}
+    </style>
+    </head>
+    <body>
+        <h2 style="left: 20%; top: 2%; position: absolute">품목 추가</h2>
+        <div id="additem">
+            <ul>
+                <li style="width:110px;font-weight: bold; ">품목코</li>
+                <li style="width:550px; font-weight: bold;">품목이름</li>
+                <li style="width:350px;font-weight: bold; ">별칭</li>
+                <li style="width:51px; font-weight: bold;">단위</li>
+                <li style="width:51px; font-weight: bold;">완박수</li>
+                <li style="width:51px; font-weight: bold;">EA수</li>
+                <li style="width:51px;font-weight: bold; ">KG수</li>
+                <li style="width:51px; font-weight: bold;"></li>
+            </ul>
+
+        </div>
+    </body>
+</html>

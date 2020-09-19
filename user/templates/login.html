@@ -1,0 +1,26 @@
+{% extends 'user/base.html' %}
+{% block content %}
+
+
+    <div class="row gtr-uniform" style="position : absolute;top:30%;left:40%;border: 0px solid gray;">
+        <h1 style="text-align: left">로 그 인</h1>
+        <div class="col-8">
+{#                <h2>로 그 인</h2>#}
+            <form method="POST" class="post-form" action="{% url 'login' %}">{% csrf_token %}
+                <label for="demo-priority-low">ID</label>
+                {{ loginform.id }}
+                <br>
+                <label for="demo-priority-low">password</label>
+                {{ loginform.pw }}
+                <br>
+                <button type="submit" class="save btn btn-default">Go</button>
+                <hr>
+                <a href="#" class="icon brands col-3-xsmall">비밀번호 찾기</a>
+                |
+                <a href="{% url 'register' %}" class="icon brands col-3-xsmall">회원 가입</a>
+            </form>
+        </div>
+    </div>
+
+
+{% endblock %}
